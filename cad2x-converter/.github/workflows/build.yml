@@ -1,0 +1,36 @@
+name: Build cad2x Windows
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Qt
+        uses: jurplel/qt-action@v2
+        with:
+          version: '5.12.12'
+          platforms: 'win32_mingw'
+      
+      - name: Build Qt
+        run: |
+          cd 3rdparty/qtbase
+          .\configure -developer-build -release -platform win32-g++ -no-iconv -no-icu -static -strip -confirm-license -opensource
+          qmake -r -- -developer-build -release -platform win32-g++ -no-iconv -no-icu -static -strip -confirm-license -opensource
+          mingw32-make -j4
+      
+      - name: Build cad2x
+        run: |
+          qmake -r
+          mingw32-make -j4
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cad2x-windows
+          path: cad2x.exe
