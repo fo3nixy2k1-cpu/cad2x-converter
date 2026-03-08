@@ -11,24 +11,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Qt
-        run: |
-          choco install qt5-static -y
-          refreshenv
-      
-      - name: Build 3rdparty
-        run: |
-          cd 3rdparty/qtbase
-          .\configure -developer-build -release -platform win32-g++ -static -confirm-license -opensource
-          qmake -r -- -developer-build -release -platform win32-g++ -static -confirm-license -opensource
-          mingw32-make -j4
-        shell: cmd
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          install: >-
+            mingw-w64-x86_64-qt5-static
+            mingw-w64-x86_64-make
       
       - name: Build cad2x
         run: |
+          export PATH="/c/msys64/mingw64/bin:$PATH"
           qmake -r
           mingw32-make -j4
-        shell: cmd
+        shell: bash
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
