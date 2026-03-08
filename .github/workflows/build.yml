@@ -11,23 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Qt
-        uses: jurplel/qt-action@v2
-        with:
-          version: '5.12.12'
-          platforms: 'win32_mingw'
-      
-      - name: Build Qt
+      - name: Build 3rdparty Qt
         run: |
           cd 3rdparty/qtbase
-          .\configure -developer-build -release -platform win32-g++ -no-iconv -no-icu -static -strip -confirm-license -opensource
-          qmake -r -- -developer-build -release -platform win32-g++ -no-iconv -no-icu -static -strip -confirm-license -opensource
+          .\configure -developer-build -release -platform win32-g++ -static -confirm-license -opensource
+          qmake -r -- -developer-build -release -platform win32-g++ -static -confirm-license -opensource
           mingw32-make -j4
+        shell: cmd
       
       - name: Build cad2x
         run: |
           qmake -r
           mingw32-make -j4
+        shell: cmd
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
