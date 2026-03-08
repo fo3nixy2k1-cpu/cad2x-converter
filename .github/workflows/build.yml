@@ -11,12 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Qt
-        run: |
-          choco install qt5-static -y
-          refreshenv
-      
-      - name: Build 3rdparty
+      - name: Build 3rdparty Qt
         run: |
           cd 3rdparty/qtbase
           .\configure -developer-build -release -platform win32-g++ -static -confirm-license -opensource
