@@ -11,20 +11,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Download MinGW 7.3.0
+        run: |
+          Invoke-WebRequest -Uri 'https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.3.0/threads-posix/seh/x86_64-7.3.0-release-posix-seh-rt_v5-rev0.7z/download' -OutFile mingw73.7z
+          7z x mingw73.7z -oC:\mingw73
+        shell: cmd
+      
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
           msystem: mingw64
           install: >-
-            mingw-w64-x86_64-qt5
-            mingw-w64-x86_64-make
+            mingw-w64-x86_64-qt5-static
       
       - name: Build cad2x
         run: |
-          export PATH="/c/msys64/mingw64/bin:$PATH"
+          $env:Path = "C:\mingw73\mingw64\bin;$env:Path"
+          $env:CC = "C:\mingw73\mingw64\bin\gcc.exe"
+          $env:CXX = "C:\mingw73\mingw64\bin\g++.exe"
           qmake -r
           mingw32-make -j4
-        shell: bash
+        shell: cmd
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
