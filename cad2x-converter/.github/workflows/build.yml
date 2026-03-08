@@ -16,7 +16,7 @@ jobs:
         with:
           msystem: mingw64
           install: >-
-            mingw-w64-x86_64-qt5-static
+            mingw-w64-x86_64-qt5
             mingw-w64-x86_64-make
       
       - name: Build cad2x
