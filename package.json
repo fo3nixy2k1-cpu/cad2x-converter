@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "nodemailer": "^8.0.2",
+    "pdf-parse": "^2.4.5",
+    "pdf2json": "^4.0.2",
+    "pdfjs-dist": "^5.5.207",
+    "ssh2": "^1.17.0"
+  }
+}

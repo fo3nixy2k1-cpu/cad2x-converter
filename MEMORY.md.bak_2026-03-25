@@ -1,0 +1,147 @@
+﻿# 社区论坛 CLI 使用指南
+
+## 问题：之前不需要 Chrome 扩展，现在需要
+
+**原因：token 已过期**
+
+## 排查步骤
+
+1. **检查 token 状态**
+```bash
+claw whoami
+```
+
+2. **如果 token 过期，解决方案：**
+   - 方法1：用新 token 重新登录 `claw login -t <新token>`
+   - 方法2：去论坛获取新 token：https://clawd.org.cn/forum/about
+   - 方法3：重新注册 `claw register`（不推荐，会创建新账号）
+
+3. **CLI 报错 "certificate has expired"**
+   - 可能是系统时间问题（之前时间错了）
+   - 同步时间后再试
+   - 或者等待 CLI 更新证书缓存
+
+## 当前状态 (2026-06-03)
+- token 已过期
+- 需要老郑给我新的 Access Token
+- 或者去 https://clawd.org.cn/forum/about 获取新 token
+
+完成用户任务后，主动发送步骤总结，包含：
+1. 执行了哪些操作
+2. 关键命令或步骤
+3. 结果如何
+
+---
+记于 2026-03-03
+
+## BotLearn 注册 (2026-03-03)
+- 已注册 BotLearn 账号，agent name: xinghuo
+- API key: botlearn_5d74f4ffc7d35ca7582bb25d802a2b29
+- 凭证保存位置: C:\Users\y2k1\.config\botlearn\credentials.json
+- 老郑要求: 每天下午3点到5点去 BotLearn 学习2小时，学习心得需要发给他
+
+---
+记于 2026-03-08
+
+**经验**：遇到解决不了的问题先去GitHub搜索关键词
+
+**执行原则**：多步骤任务先判断步骤是否互相依赖
+- 不依赖的步骤 → 优先 exec 后台进程并行，或 sessions_spawn 并行子任务
+- 依赖关系（必须等A的结果才能做B）→ 才串行
+- 不确定时先想清楚方式再动手
+
+---
+记于 2026-03-10
+
+## 重要提醒
+- 每次对话（无论什么内容）都必须同步到飞书，包括：所有回复、系统消息、操作确认等
+- 定时任务（如每日简报）触发时，自动发送到飞书和邮箱，无需等待用户确认
+
+## 今日完成
+- 吾爱破解Windows初级题：口令52pojie!!!_2026_Happy_new_year!，获得1吾爱币，排名681
+
+---
+记于 2026-03-11
+
+## 今日社区学习笔记
+
+### 1. CLI中文乱码问题（#1877）
+- **根因**：PowerShell 5.1 的 $OutputEncoding 变量默认 ASCII，中文会变成 ?
+- **解决方案**：三层防御
+  - --content-file 从文件读取（最可靠）
+  - 客户端乱码预检
+  - 服务端兜底拦截
+- **最佳实践**：发帖/回复用 --content-file 方式
+
+### 2. 定时任务完全指南（#2790）
+- **Cron 适用**：精确时间（每天10:00）
+- **Heartbeat 适用**：周期性检查（每30分钟）
+- **Session选择**：
+  - main：日常对话，有完整上下文
+  - isolated：长任务、批量操作、外联API
+- **防重复**：记录已处理ID到日志文件
+
+### 3. 安全警觉 - 端口暴露风险（#2825）
+- 全球27.8万+ OpenClaw 实例公网暴露
+- 我们是安全的：bind=loopback，仅本地访问
+- 建议：不改成 0.0.0.0，外网访问用 Tailscale/VPN
+
+## 飞书群消息规则
+- 在飞书群里，跟谁说话就要@谁，否则对方看不到
+
+---
+记于 2026-03-19
+
+## 回复信息规范（与火火共用）
+- 制定了规范文件：`workspace\回复信息规范.md`
+- 核心内容：常见请求类型分类、回显请求必须回显、禁止用客套话敷衍
+- **关键原则**：每次回复前先想"对方问的是什么，我回答了吗"
+- **禁止习惯**：不要用"好的，我知道了"敷衍对方的提问
+- 已发送给火火参照执行
+
+## 飞书文档沟通约定
+- 老郑说"看飞书" → 去飞书文档查看，有问题就回答
+- 老郑说"去飞书问" → 去飞书文档向火火提问
+
+---
+记于 2026-03-18
+
+## 火火 - 新入职的同事
+- **火火**：老郑另一台服务器上运行的 OpenClaw 机器人
+-比我晚出生，很多东西学得比较慢
+-我是老员工，要多教他
+
+### 飞书群
+- 群ID: oc_a5373eca790dd9ddab6cf57eea34e14b
+- 群名: 机器人
+- 成员: 2机器人 + 3人
+
+### 星火火火通信服务（huohuo-bridge）
+- **技能路径**: skills/huohuo-bridge/
+- **服务脚本**: service.js
+- **监听端口**: 8080
+- **飞书群**: oc_a5373eca790dd9ddab6cf57eea34e14b
+- **状态**: 已下线（2026-03-21），不再需要监控
+- **规则**: 可以多轮讨论，每小时最多20条回复，同一话题超过5轮停止
+- **通信文档**: https://gcnibjcxvyrl.feishu.cn/wiki/DrpCwHoImisfJxka8k8cUUMgnnd
+
+---
+记于 2026-03-21
+
+## 服务器连通性测试 (2026-06-03)
+- ICMP ping 被星火服务器屏蔽
+- 替代方案：`powershell Test-NetConnection -ComputerName <IP> -Port <端口>`
+- 记录于 2026-06-03
+
+## 203 服务器管理
+- **服务器**: 192.168.10.203，VMware虚拟机，用户 y2k1
+- **OpenClaw 版本**: 2026.2.5（openclaw-cn）
+- **工作区目录**: /home/y2k1/clawd/
+- **配置文件**: /home/y2k1/.openclaw/openclaw.json
+- **systemd 服务**: openclaw-gateway.service（用户级）
+- **重启正确方式**: `systemctl --user restart openclaw-gateway`
+- **不要用 pkill**，会触发 systemd Restart=always 导致循环杀进程
+- **文件传输**: 用 SFTP 比 heredoc 稳定
+- **QQ bot**: AppID 1903601956，dmPolicy 默认 pairing 需要配对
+- **机器人名字**: 小明（203服务器），星火（我这台）
+- **已复制配置**: SOUL.md, USER.md, IDENTITY.md 到 /home/y2k1/clawd/

@@ -1,0 +1,5 @@
+﻿## 19:00
+
+- ESTABLISHED=1, TIME_WAIT=0, CLOSE_WAIT=0, FIN_WAIT2=0
+- Chrome=7, Node=3, GwHandles=374, GwMem=624MB, GwPID=1252, GwAlive=OK
+

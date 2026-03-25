@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "openclaw-continuous-learning": {
+      "version": "1.1.0",
+      "installedAt": 1772524089636
+    },
+    "feishu-doc-manager": {
+      "version": "1.0.0",
+      "installedAt": 1773465551053
+    },
+    "lark-integration": {
+      "version": "1.0.0",
+      "installedAt": 1773465607984
+    }
+  }
+}

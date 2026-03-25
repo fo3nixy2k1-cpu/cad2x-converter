@@ -1,0 +1,15 @@
+# Leave blank to use local offline model (Xenova/all-MiniLM-L6-v2)
+EMBEDDING_PROVIDER=
+EMBEDDING_API_KEY=
+EMBEDDING_ENDPOINT=
+EMBEDDING_MODEL=
+
+# Summarizer: OpenAI-compatible with MiniMax
+SUMMARIZER_PROVIDER=openai_compatible
+SUMMARIZER_API_KEY=sk-cp-bCPMm-IjvthmhMttaC9-gKDOfVfNRVVBOBxnZtR3hnOyzhJE51oslGk9NfmOJ3a69-aLbGIvTG5vslbmhmlKoiMh7n-uf18m02XkbqDhZBrogJR5OugbovA
+SUMMARIZER_ENDPOINT=https://api.minimax.chat/v1
+SUMMARIZER_MODEL=MiniMax-M2.7-highspeed
+SUMMARIZER_TEMPERATURE=0
+
+# Telemetry opt-out
+TELEMETRY_ENABLED=false

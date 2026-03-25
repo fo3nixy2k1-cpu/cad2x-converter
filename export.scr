@@ -1,0 +1,15 @@
+; ZWCAD Script - Export to PNG
+; Open the file and export to PNG
+
+(command "_.open" "C:\\Users\\y2k1\\.openclaw\\media\\outbound\\ca6092c3-7d1c-4847-bf3e-4d859beaba3d.dwg")
+(command "_.zoom" "_.e")
+(command "_.plot" 
+    "Y"           ; Yes to plot
+    ""            ; Printer name (use default)
+    ""            ; Paper size
+    "Model"       ; Model space
+    "PNG"         ; Plot to file
+    "C:\\Users\\y2k1\\.openclaw\\media\\outbound\\ca6092c3-7d1c-4847-bf3e-4d859beaba3d.png"  ; Output file
+    "Y"           ; Yes to proceed
+)
+(command "_.quit")

@@ -1,0 +1,1 @@
+﻿2026-03-24 02:44:54 | ESTABLISHED=0 | TIME_WAIT=0 | CLOSE_WAIT=0 | FIN_WAIT2=0 | Chrome=7 | Node=3 | GwHandles=379 | GwMem=741MB | GwPID=7008 | GwAlive=OK

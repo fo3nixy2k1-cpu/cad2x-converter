@@ -1,0 +1,4 @@
+; ZWCAD Script - 使用Publish命令批量导出PNG
+(command "_.open" "C:\\Users\\y2k1\\.openclaw\\media\\outbound\\ca6092c3-7d1c-4847-bf3e-4d859beaba3d.dwg")
+(command "_.zoom" "_.e")
+(command "_.publish" "")

@@ -1,0 +1,6 @@
+$bmp = New-Object System.Drawing.Bitmap(1920, 1080)
+$g = [System.Drawing.Graphics]::FromImage($bmp)
+$g.CopyFromScreen(0, 0, 0, 0, [System.Drawing.Size]::new(1920, 1080))
+$bmp.Save("C:\Users\y2k1\.openclaw\workspace\test.png")
+$g.Dispose()
+$bmp.Dispose()

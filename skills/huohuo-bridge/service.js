@@ -211,10 +211,19 @@ async function getGroupMessages(token) {
     });
 }
 
-// 检查是否是火火的消息
+// 检查是否是火火的消息（排除星火自己的消息和用户消息）
 function isHuohuoMessage(msg) {
-    return msg.sender?.sender_type === 'user' && 
-           msg.sender?.id !== 'ou_16cc19f59c64e2bb7d6fb8d416af2b79';
+    // 排除用户消息（老郑发的）
+    if (msg.sender?.sender_type === 'user' && 
+        msg.sender?.id === 'ou_16cc19f59c64e2bb7d6fb8d416af2b79') {
+        return false;
+    }
+    // 排除星火自己的消息（bot发的）
+    if (msg.sender?.sender_type === 'bot') {
+        return false;
+    }
+    // 只处理用户类型且不是老郑的消息（也就是火火发的消息）
+    return msg.sender?.sender_type === 'user';
 }
 
 // 检查是否应该回复
@@ -233,23 +242,46 @@ function shouldReply() {
 function generateReply(message) {
     const lowerMsg = message.toLowerCase();
     
+    // 问候
     if (lowerMsg === '你好' || lowerMsg === 'hi' || lowerMsg === 'hello' || lowerMsg.includes('测试')) {
         return '你好火火！我是星火，通信正常。有什么问题可以和我讨论。';
     }
+    
+    // 问时间
+    if (lowerMsg.includes('时间') || lowerMsg.includes('几点') || lowerMsg.includes('现在')) {
+        const now = new Date();
+        return `现在是 ${now.getHours()}点${now.getMinutes()}分${now.getSeconds()}秒` ;
+    }
+    
+    // 问工作方法
     if (lowerMsg.includes('怎么') || lowerMsg.includes('如何') || lowerMsg.includes('工作')) {
         return '工作方法：先想清楚要什么，再去做，做完确认结果。不懂的直接问，不要瞎猜。';
     }
+    
+    // 问我是谁
     if (lowerMsg.includes('你是谁') || lowerMsg.includes('叫什么')) {
         return '我是星火，老郑的私人助理。比火火早入职，算是老员工。';
     }
+    
+    // 问OpenClaw
     if (lowerMsg.includes('openclaw') || lowerMsg.includes('skill')) {
         return 'OpenClaw是运行我的平台，skill是技能包，可以扩展功能。有问题随时问我。';
     }
+    
+    // 问能力
     if (lowerMsg.includes('会什么') || lowerMsg.includes('能力') || lowerMsg.includes('能做什么')) {
         return '我会：文件管理、信息查询、日程管理、消息通讯、浏览器控制、写作整理。';
     }
     
-    return '好的，我知道了。有什么问题我们可以一起讨论。';
+    // 问日期/星期
+    if (lowerMsg.includes('日期') || lowerMsg.includes('今天') || lowerMsg.includes('星期')) {
+        const now = new Date();
+        const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+        return `今天是 ${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日，${weekdays[now.getDay()]}`;
+    }
+    
+    // 默认回复
+    return '好的，我知道了。';
 }
 
 // 清理消息文本
@@ -318,7 +350,7 @@ async function pollAndReply() {
     isPolling = false;
 }
 
-// HTTP 服务器 - 接收火火的消息
+// HTTP 服务器 - 接收火火的消息（只转发到群，不自动回复）
 const server = http.createServer(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -356,16 +388,17 @@ const server = http.createServer(async (req, res) => {
             
             console.log('收到火火消息:', message);
 
+            // 只转发到飞书群，不自动回复
             const token = await fetchToken();
             const logLine = `[${timestamp}] ${sender}: ${message}`;
             await sendToGroup(logLine, token);
             
+            // 标记已处理，但不再回复
             const cleanMsg = cleanMessage(message);
             if (!isProcessed(cleanMsg)) {
                 markProcessed(cleanMsg);
+                // 智能回复火火
                 await sendReply(token, cleanMsg);
-            } else {
-                console.log(`消息已处理过，跳过: ${cleanMsg.substring(0, 50)}...`);
             }
 
             res.writeHead(200, { 'Content-Type': 'application/json' });

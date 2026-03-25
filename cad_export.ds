@@ -1,0 +1,9 @@
+; LibreCAD脚本 - 导出DWG为PNG
+; 打开文件
+open("C:\Users\y2k1\.openclaw\media\outbound\2a4ce305-48ff-4cd6-a944-1f63d34f5b86.dwg")
+
+; 导出PNG
+export("C:\Users\y2k1\.openclaw\workspace\cad_output.png", "png")
+
+; 退出
+quit
