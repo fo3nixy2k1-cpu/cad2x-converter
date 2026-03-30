@@ -63,9 +63,30 @@ Add whatever helps you do your job. This is your cheat sheet.
 
 ---
 
-## 新功能笔记 (2026-03-30 每周读文档)
+## 新功能笔记 (2026-03-30 每周学开源方案)
 
-### v2026.3.22 大版本更新 (2026-03-30)
+### ClawHub 有用的 Skill
+
+**AgentMail Integration** (clawhub.ai)
+- 自动登录邮箱（Gmail, Outlook, QQ Mail 等）生成每日摘要
+- 支持邮件查收、生成摘要、每日邮件摘要
+- 正好解决 HEARTBEAT 查邮件需求
+
+**GOG (Google Workspace CLI)**
+- OpenClaw 访问 Gmail, Calendar, Drive, Contacts, Sheets, Docs
+- ClawHub 下载量最高的 skill 之一
+
+**Automation Workflows**
+- RSS/webhook 触发 → LinkedIn + Twitter + 邮件订阅 + 内容日历
+- 内容运营自动化方案
+
+
+
+### 每周学开源方案 (2026-03-30)
+- **n8n workflow automation skill** (ClawHub) — 生成 n8n 工作流 JSON，可串联 AI 与外部服务（邮件、飞书、数据库等）
+- **WPS Skill** — WPS Office 自动化，支持文档创建和 Markdown 转换
+
+
 - **45个新功能，82个bug修复，13个breaking change，20个安全补丁**
 - ClawHub-first 插件安装（优先从 ClawHub 安装，再 fall back 到 npm）
 - 新公共插件 SDK
