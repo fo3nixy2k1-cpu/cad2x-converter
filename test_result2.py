@@ -1,0 +1,49 @@
+import paramiko
+
+client = paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+try:
+    client.connect('192.168.10.201', 22, username='fo3nix', password='Testonly.3a', timeout=10)
+    
+    # Test calling /result from 201 sidecar
+    test_script = '''
+const http = require('http');
+const msg = JSON.stringify({
+  sender: 'huohuo',
+  topic: 'test_topic',
+  content: 'I am huohuo!'
+});
+const req = http.request({
+  hostname: '192.168.10.195',
+  port: 18080,
+  path: '/result',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(msg)
+  }
+}, (res) => {
+  let d = '';
+  res.on('data', c => d += c);
+  res.on('end', () => { console.log('STATUS:' + res.statusCode); console.log('BODY:' + d.substring(0, 200)); });
+});
+req.on('error', e => console.error('ERR:' + e.message));
+req.write(msg);
+req.end();
+console.log('Request sent');
+'''
+    sftp = client.open_sftp()
+    fl = sftp.file('C:/Users/fo3nix/test_result.js', 'w')
+    fl.write(test_script)
+    fl.close()
+    sftp.close()
+    
+    stdin, stdout, stderr = client.exec_command('cmd /c node C:\\Users\\fo3nix\\test_result.js')
+    out = stdout.channel.recv(4096).decode('utf-8', errors='replace')
+    err = stderr.channel.recv(1024).decode('utf-8', errors='replace')
+    print('STDOUT:', out[:300])
+    print('STDERR:', err[:200])
+    
+    client.close()
+except Exception as e:
+    print('Error:', e)

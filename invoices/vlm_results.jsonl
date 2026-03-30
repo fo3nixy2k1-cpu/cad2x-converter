@@ -1,0 +1,5 @@
+{"error": "请提供发票图片以便识别其中的结构化信息", "source_file": "07482866.png"}
+{"invoice_number": "", "date": "", "amount": "", "buyer": "", "seller": "", "item": [], "tax_rate": "", "tax_amount": "", "source_file": "26422000000645907546.png"}
+{"error": "未检测到发票图片，请提供发票图片后重新识别", "source_file": "26442000002274322171.png"}
+{"invoice_number": null, "date": null, "amount": null, "buyer": null, "seller": null, "item": [], "tax_rate": null, "tax_amount": null, "source_file": "26447000000090199110.png"}
+{"invoice_number": null, "date": null, "amount": null, "buyer": null, "seller": null, "item": null, "tax_rate": null, "tax_amount": null, "source_file": "26447000000490948601.png"}

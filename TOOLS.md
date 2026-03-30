@@ -46,19 +46,6 @@ Add whatever helps you do your job. This is your cheat sheet.
 - 旧 Key: `sk-cp-ugbovA` 已替换
 
 <!-- clawx:begin -->
-### 邮箱凭证
-
-- **126 邮箱**: cnxgx@126.com
-- **密码**: Testonly.1a
-- **已记住**：SKILL.md (mail-browser) + TOOLS.md
-
-### 201 服务器 (火火)
-
-- **IP**: 192.168.10.201
-- **SSH 用户**: y2k1
-- **SSH 密码**: Testonly.3a
-- **Gateway token**: af83d54dae9fd044ced5005f1cbdfb00b7636317c3143a73
-
 ## ClawX Tool Notes
 
 ### uv (Python)
@@ -72,89 +59,35 @@ Add whatever helps you do your job. This is your cheat sheet.
 - Flow: `action="start"` → `action="snapshot"` (see page + get element refs like `e12`) → `action="act"` (click/type using refs).
 - Open new tabs: `action="open"` with `targetUrl`.
 - To just open a URL for the user to view, use `shell:openExternal` instead.
-
----
-
-## OpenClaw 合并策略笔记 (2026-03-16)
-
-### 上游合并分析学习
-
-从 `upstream-merge-analysis-2026.2.23-2026.3.2.md` 学到：
-
-1. **合并策略**: 全量合并 + 选择性还原
-   - 直接 `git merge v2026.3.2`
-   - 海外渠道目录用 `git checkout HEAD --` 还原保留本地版本
-
-2. **过滤规则**
-   - ✅ 合并: CRITICAL-BUG + SECURITY + 通用 CHANNEL-FIX
-   - ❌ 跳过: 海外渠道 (Telegram/Discord/Slack等)
-   - ❌ 保留本地: 飞书
-
-3. **关键点**
-   - 涉及共享代码的安全提交即使来自海外渠道也要合并（如 src/security/, src/routing/）
-   - 飞书本地实现需手动验证是否覆盖上游安全修复
-   - 冲突主要来自本地化重命名（openclaw → openclaw-cn）
-
-4. **实用命令**
-```bash
-# 保留本地版本（自动解决冲突）
-git checkout HEAD -- extensions/feishu/ src/feishu/
-```
-
----
-
-## 每周技能学习 (2026-03-16)
-
-### RSS 相关技能调研
-
-**有用的 RSS 技能：**
-- `rss-ai-reader` - RSS AI 阅读器，支持 LLM 生成中文摘要，推送到飞书/Telegram/Email（需 --force 安装）
-- `rss-reader` - 监控 RSS/Atom feeds 用于内容研究
-- `blogwatcher` - 博客和 RSS/Atom 订阅监控（内置 skill，已禁用）
-
-### ClawHub CLI 常用命令
-
-```bash
-# 搜索技能
-npx clawhub search <关键词>
-
-# 查看技能详情
-npx clawhub inspect <slug>
-
-# 安装技能
-npx clawhub install <slug> --workdir <目录> --force
-
-# 查看已安装技能
-npx clawhub list --workdir <目录>
-
-# 查看可用技能（含状态）
-npx openclaw skills list
-```
-
-### 数据源
-- **ClawHub** (clawhub.com) - 官方技能注册表，向量搜索
-- **AgentSkill.work** (agentskill.work) - 330+ GitHub 仓库索引，支持关键词+过滤
-
-### 已安装的实用技能
-- `openclaw-continuous-learning` - 自主学习系统，分析会话检测模式，创建原子学习
-- `xlsx` - 电子表格操作（读写 .xlsx/.csv 等）
-- `feishu-doc-manager` - 飞书文档管理，Markdown 转换
-
-### ClawHub 探索命令 (2026-03-23)
-- `npx clawhub explore` — 浏览最新更新的技能（当前返回空，可能无最新）
-- `npx clawhub inspect <slug>` — 查看技能详情（含文件列表）
-- `npx clawhub inspect <slug> --file SKILL.md` — 只看 SKILL.md 内容
-
-### 值得关注的技能 (RSS / Memory 方向)
-- `rss-fetcher` (1.1.0) - 统一RSS采集管理系统，支持增量抓取/自动去重/HTML报告，MIT-0
-- `super-rss-agent` (0.1.0) - RSS订阅管理与阅读，支持OPML导入导出/已读未读追踪/HTML抓取
-- `fluid-memory` (1.0.9) - 基于艾宾浩斯遗忘曲线的拟人化流体记忆系统（需 Python + chromadb + pyyaml）
-- `memory-hygiene` (1.0.0) - LanceDB 向量记忆审计清理工具（安全标注 SUSPICIOUS）
 <!-- clawx:end -->
 
 ---
 
-## 新功能笔记 (2026-03-23 每周读文档)
+## 新功能笔记 (2026-03-30 每周读文档)
+
+### v2026.3.22 大版本更新 (2026-03-30)
+- **45个新功能，82个bug修复，13个breaking change，20个安全补丁**
+- ClawHub-first 插件安装（优先从 ClawHub 安装，再 fall back 到 npm）
+- 新公共插件 SDK
+- 浏览器和 Chrome MCP 清理
+- 安全加固：exec/webhook/config 路径强化
+
+### Config 备份 (2026-03-27)
+- 配置文件打包：`$desktop\openclaw_config.zip`（40MB）
+- 包含：openclaw.json、sessions、credentials、relay_py、ssh keys、invoices、memory
+
+### Context Counter Bug (2026-03-27)
+- OpenClaw session_status 显示 0/200k 是已知 bug（Issue #50795）
+- 根因：compaction 后 `clearStaleAssistantUsageOnSessionMessages()` 错误清除所有 usage 数据
+- jsonl 里每条 usage 都是 `{"input":0,"output":0,"totalTokens":0}`，不是显示问题
+- 火火正常但星火异常，说明 MiniMax API usage 返回在某些实例上不兼容
+- 临时方案：只能看 MiniMax 后台 dashboard 查实际用量，等官方修复
+
+### thinking 默认开启 (2026-03-27)
+- 配置项：`agents.defaults.thinkingDefault: low`
+- Gateway 重启后生效
+
+
 
 ### 1. Diffs 工具 — 代码/Markdown diff 可视化
 
@@ -241,6 +174,123 @@ openclaw cron add --light-context --every "4h" --session isolated --message "轻
 
 ---
 
+## 飞书消息提醒（2026-03-22）
+- 飞书消息紧急提醒（buzz）：在飞书里 @ 我，或者直接说"提醒我xxx"
+- 使用飞书官方的"紧急"功能，消息会弹窗震动
+
+## relay 通信系统（Python 版，2026-03-26 更新）
+
+### 编码问题记录（2026-03-25）
+- **问题**：PowerShell `Invoke-RestMethod` 传中文到 relay Hub 会乱码
+- **解决**：用 Python 脚本 `relay_send.py` 发消息，不用 PowerShell 命令
+- **脚本**：`C:\Users\y2k1\relay_py\relay_send.py`
+- **用法**：`python relay_send.py <target> <content> [topic]`
+
+### 架构
+```
+老郑 ←→ 星火(195) ←——relay——→ 火火(201) + 启明(203)
+              ↑
+         Hub (18080)        Sidecar (18081)    Sidecar (18081)
+```
+
+### 三个节点的角色
+
+| 节点 | IP | 运行的组件 | 端口 |
+|------|----|-----------|------|
+| 星火（Hub/我） | 192.168.10.195 | Relay Hub + 星火 sidecar | 18080, 18081 |
+| 火火 | 192.168.10.201 | 火火 sidecar | 18081 |
+| 启明 | 192.168.10.203 | 启明 sidecar（未部署） | 18081 |
+
+### 文件位置
+
+**本机（195，星火）**：
+- Hub：`C:\Users\y2k1\relay_py\relay_hub.py`
+- 星火 sidecar：`C:\Users\y2k1\relay_py\relay_sidecar_195.py`
+- 通信结果目录：`C:\Users\y2k1\.openclaw\relay_results\`（结果文件命名：`result_<topic>.txt`）
+- 启动方式：
+  ```powershell
+  # 杀掉旧的
+  taskkill /F /IM python.exe 2>$null
+  # 启动 Hub
+  Start-Process python -ArgumentList "C:\Users\y2k1\relay_py\relay_hub.py" -WindowStyle Hidden
+  # 启动星火 sidecar
+  Start-Process python -ArgumentList "C:\Users\y2k1\relay_py\relay_sidecar_195.py" -WindowStyle Hidden
+  ```
+- 验证运行：`curl http://127.0.0.1:18080/health` 返回 `{"status":"ok"}`
+
+**201 火火**：
+- sidecar 脚本：`C:\Users\fo3nix\relay_sidecar_python.py`
+- 日志文件：`C:\Users\fo3nix\relay_sidecar_python.log`
+- Python 路径：`C:\Program Files\Python311\python.exe`
+- SSH 用户：fo3nix / 密码：Testonly.3a
+- 部署方式：**Windows 计划任务**（系统重启也能恢复）
+  - 任务名：`RelaySidecarPy`
+  - 触发条件：开机自启（ONSTART）
+  - 查看任务：`schtasks /Query /TN "RelaySidecarPy" /FO LIST /V`
+  - 手动启动：`schtasks /Run /TN "RelaySidecarPy"`
+  - 删除重建：
+    ```
+    schtasks /Delete /TN "RelaySidecarPy" /F
+    schtasks /Create /TN "RelaySidecarPy" /TR "cmd /c \"\"C:\Program Files\Python311\python.exe\" \"C:\Users\fo3nix\relay_sidecar_python.py\" >> \"C:\Users\fo3nix\relay_sidecar_python.log\" 2>&1\"" /SC ONSTART /RU fo3nix /RP Testonly.3a /F
+    ```
+
+### Hub 的路由
+
+| 路径 | 方法 | 功能 |
+|------|------|------|
+| `/relay` | POST | 转发消息给目标 agent |
+| `/webhook/agent` | POST | agent 回复消息时使用（fire-and-forget 转发给星火 sidecar） |
+| `/result` | POST | 同上，兼容旧版 |
+| `/health` | GET | 健康检查 |
+| `/agents` | GET | 查看已注册 agent 列表 |
+
+### 通信流程
+
+1. 星火发消息：`POST /relay {target:"huohuo", sender:"xinghuo", topic:"xxx", content:"消息内容"}`
+2. Hub 立刻返回 `{"status":"ok"}`（异步转发，不等待）
+3. Hub 把消息转发给火火 sidecar：`http://192.168.10.201:18081/webhook/agent`
+4. 火火 sidecar 收到后调用本地 openclaw 处理，拿到回复
+5. 火火 sidecar 把回复 POST 到 Hub 的 `/webhook/agent`
+6. Hub 把回复转发给星火 sidecar：`http://192.168.10.195:18081/webhook/agent`
+7. 星火 sidecar 保存结果到 `result_<topic>.txt`，Claw 回复通过 `post_to_hub` 传回 Hub
+8. Hub 转发回复给火火 sidecar，火火保存结果
+
+### 关键修复记录
+- **2026-03-25**: 修复 Hub 的 `log()` 函数在 Windows GBK 控制台打印中文时崩溃的问题
+- **2026-03-25**: 修复星火 sidecar 的 `call_claw` 缺少回传路径问题，Claw 回复现在通过 `post_to_hub` 传回 Hub
+
+### 已知 token
+- 201 火火 Gateway token：`af83d54dae9fd044ced5005f1cbdfb00b7636317c3143a73`
+
+### 远程操作 201 的常用命令（Python + paramiko）
+```python
+import paramiko
+client = paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect('192.168.10.201', 22, username='fo3nix', password='Testonly.3a', timeout=10)
+
+# 查看端口
+chan = client.get_transport().open_session()
+chan.exec_command(r'powershell -Command "Get-NetTCPConnection -LocalPort 18081 -ErrorAction SilentlyContinue | Format-Table"')
+stdout = chan.makefile('r', 4096)
+print(stdout.read().decode('gbk', errors='replace'))
+
+# 查看日志
+chan2 = client.get_transport().open_session()
+chan2.exec_command(r'powershell -Command "Get-Content \'C:\Users\fo3nix\relay_sidecar_python.log\' -Encoding UTF8 -Tail 10"')
+stdout2 = chan2.makefile('r', 4096)
+print(stdout2.read().decode('utf-8', errors='replace'))
+
+# 重启 sidecar
+chan3 = client.get_transport().open_session()
+chan3.exec_command(r'powershell -Command "Get-NetTCPConnection -LocalPort 18081 -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue"')
+chan3.close()
+import time; time.sleep(2)
+# 重新运行计划任务
+chan4 = client.get_transport().open_session()
+chan4.exec_command(r'schtasks /Run /TN "RelaySidecarPy"')
+```
+
 ## PinchTab 浏览器控制 (2026-03-22)
 
 ### 安装信息
@@ -279,6 +329,10 @@ pinchtab click e5
 # 填表单
 pinchtab fill e3 "text"
 ```
+
+### 默认浏览器（2026-03-26）
+- 访问网页默认使用 **OpenClaw 内置 `browser` 工具**
+- 用 `browser` 工具的 `open` 或 `navigate` action 操作
 
 ### 安全说明
 - IDPI 默认限制只能访问本地网站，开启 `allowedDomains: ["*"]` 后可访问公网
